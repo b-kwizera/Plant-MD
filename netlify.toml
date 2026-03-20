@@ -1,9 +1,3 @@
 [build]
   command = "npm run build"
   publish = ".next"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[context.production.environment]
-  NEXT_USE_NETLIFY_EDGE = "true"
