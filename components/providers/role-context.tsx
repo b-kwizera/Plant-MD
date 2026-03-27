@@ -10,6 +10,8 @@ interface RoleContextType {
   userId: string | null;
   fullName: string;
   avatarUrl: string | null;
+  phoneNumber: string | null;
+  smsNotificationsEnabled: boolean;
 }
 
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
@@ -19,26 +21,37 @@ export function RoleProvider({
   initialRole = "farmer",
   userId = null,
   initialFullName = "User",
-  initialAvatarUrl = null
+  initialAvatarUrl = null,
+  initialPhoneNumber = null,
+  initialSmsEnabled = true
 }: { 
   children: React.ReactNode;
   initialRole?: UserRole;
   userId?: string | null;
   initialFullName?: string;
   initialAvatarUrl?: string | null;
+  initialPhoneNumber?: string | null;
+  initialSmsEnabled?: boolean;
 }) {
   const [role, setRole] = useState<UserRole>(initialRole);
   const [fullName, setFullName] = useState<string>(initialFullName);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialAvatarUrl);
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(initialPhoneNumber);
+  const [smsNotificationsEnabled, setSmsNotificationsEnabled] = useState<boolean>(initialSmsEnabled);
 
   useEffect(() => {
     setRole(initialRole);
     setFullName(initialFullName);
     setAvatarUrl(initialAvatarUrl);
-  }, [initialRole, initialFullName, initialAvatarUrl]);
+    setPhoneNumber(initialPhoneNumber);
+    setSmsNotificationsEnabled(initialSmsEnabled);
+  }, [initialRole, initialFullName, initialAvatarUrl, initialPhoneNumber, initialSmsEnabled]);
 
   return (
-    <RoleContext.Provider value={{ role, setRole, userId, fullName, avatarUrl }}>
+    <RoleContext.Provider value={{ 
+      role, setRole, userId, fullName, avatarUrl, 
+      phoneNumber, smsNotificationsEnabled 
+    }}>
       {children}
     </RoleContext.Provider>
   );

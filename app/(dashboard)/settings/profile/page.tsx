@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { User, Mail, Camera, Save, Loader2, CheckCircle2, ChevronLeft } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { User, Mail, Camera, Save, Loader2, CheckCircle2, ChevronLeft, Phone, Bell, BellOff } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,22 +9,33 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRole } from "@/components/providers/role-context";
 import { updateProfile } from "@/app/actions/profile";
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 export default function ProfileSettingsPage() {
-  const { fullName, avatarUrl, role, userId } = useRole();
+  const { fullName, avatarUrl, role, userId, phoneNumber: initialPhone, smsNotificationsEnabled: initialSms } = useRole();
   const [name, setName] = useState(fullName);
+  const [phone, setPhone] = useState(initialPhone || "");
+  const [smsEnabled, setSmsEnabled] = useState(initialSms);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
 
+  useEffect(() => {
+    setName(fullName);
+    setPhone(initialPhone || "");
+    setSmsEnabled(initialSms);
+  }, [fullName, initialPhone, initialSms]);
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
       const formData = new FormData();
       formData.append("fullName", name);
+      formData.append("phoneNumber", phone);
+      formData.append("smsEnabled", smsEnabled.toString());
       await updateProfile(formData);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -162,6 +173,45 @@ export default function ProfileSettingsPage() {
               placeholder="Your Email" 
               className="h-12 rounded-xl bg-muted/50 border-border/40 font-bold opacity-60 cursor-not-allowed" 
             />
+          </div>
+          <div className="flex flex-col gap-3">
+            <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-2">
+              <Phone className="h-3.5 w-3.5 text-primary" /> Phone Number
+            </label>
+            <Input 
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+250 788 000 000" 
+              className="h-12 rounded-xl bg-[#F8FAF8] border-border/40 focus:ring-[#1A5336] font-bold text-[#1A5336]" 
+            />
+          </div>
+          <div className="flex flex-col gap-3">
+            <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">
+              SMS Notifications
+            </label>
+            <button 
+              onClick={() => setSmsEnabled(!smsEnabled)}
+              className={cn(
+                "h-12 rounded-xl border transition-all flex items-center justify-between px-4 font-bold text-sm group",
+                smsEnabled 
+                  ? "bg-primary/5 border-primary/20 text-primary" 
+                  : "bg-muted/50 border-border/40 text-muted-foreground"
+              )}
+            >
+              <div className="flex items-center gap-3">
+                {smsEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
+                <span>{smsEnabled ? "Enabled" : "Disabled"}</span>
+              </div>
+              <div className={cn(
+                "w-10 h-5 rounded-full relative transition-all duration-300",
+                smsEnabled ? "bg-primary" : "bg-muted-foreground/30"
+              )}>
+                <div className={cn(
+                  "absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300",
+                  smsEnabled ? "left-6" : "left-1"
+                )} />
+              </div>
+            </button>
           </div>
           <div className="flex flex-col gap-3">
             <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">

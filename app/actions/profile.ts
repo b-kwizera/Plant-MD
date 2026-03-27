@@ -13,10 +13,14 @@ export async function updateProfile(formData: FormData) {
 
   const fullName = formData.get('fullName') as string
   const avatarUrl = formData.get('avatarUrl') as string
+  const phoneNumber = formData.get('phoneNumber') as string
+  const smsEnabled = formData.get('smsEnabled') === 'true'
 
   const updateData: any = {}
   if (fullName) updateData.full_name = fullName
   if (avatarUrl) updateData.avatar_url = avatarUrl
+  if (phoneNumber !== null) updateData.phone_number = phoneNumber
+  if (formData.has('smsEnabled')) updateData.sms_notifications_enabled = smsEnabled
 
   const { error } = await supabase
     .from('profiles')

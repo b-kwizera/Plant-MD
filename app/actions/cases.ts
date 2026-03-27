@@ -48,6 +48,31 @@ export async function submitExpertReview(caseId: string, reviewData: any) {
 
   if (caseError) throw new Error(caseError.message)
 
+  // 3. Send SMS Notification to Farmer
+  try {
+    const { data: caseData } = await supabase
+      .from('cases')
+      .select('farmer_id, crop')
+      .eq('id', caseId)
+      .single();
+
+    if (caseData) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('phone_number, sms_notifications_enabled')
+        .eq('id', caseData.farmer_id)
+        .single();
+
+      if (profile?.phone_number && profile?.sms_notifications_enabled) {
+        const { sendSMS, formatExpertMessage } = await import("@/lib/sms");
+        const msg = formatExpertMessage(caseData.crop, reviewData.disease || 'your case', reviewData.severity || 'Medium');
+        await sendSMS(profile.phone_number, msg);
+      }
+    }
+  } catch (smsError) {
+    console.warn("[Expert Review] Failed to send SMS:", smsError);
+  }
+
   revalidatePath('/cases')
   revalidatePath('/experts')
   return { success: true }

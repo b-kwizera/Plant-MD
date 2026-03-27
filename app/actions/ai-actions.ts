@@ -8,6 +8,12 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || "");
 export async function analyzePlantImage(caseId: string, imageUrls: string[], crop: string) {
   console.log(`[AI] Starting analysis for case ${caseId}...`);
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    console.error("[AI] Not authenticated");
+    return { success: false, error: "Not authenticated" };
+  }
   
   if (!process.env.GOOGLE_AI_API_KEY) {
     console.warn("[AI] GOOGLE_AI_API_KEY is missing. Falling back to Simulation Mode.");
@@ -85,6 +91,24 @@ export async function analyzePlantImage(caseId: string, imageUrls: string[], cro
     }
 
     console.log("[AI] Success! Database updated.");
+
+    // 5. Send SMS Notification
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('phone_number, sms_notifications_enabled')
+        .eq('id', user.id) // This assumes the current user is the farmer (which is true for /diagnose)
+        .single();
+
+      if (profile?.phone_number && profile?.sms_notifications_enabled) {
+        const { sendSMS, formatAIMessage } = await import("@/lib/sms");
+        const msg = formatAIMessage(crop, analysis.disease, analysis.confidence);
+        await sendSMS(profile.phone_number, msg);
+      }
+    } catch (smsError) {
+      console.warn("[AI] Failed to send SMS:", smsError);
+    }
+
     return { success: true, analysis };
 
   } catch (error: any) {
@@ -134,6 +158,26 @@ async function simulateAnalysis(caseId: string, crop: string) {
     .eq('id', caseId);
 
   if (updateError) console.error("[AI] Simulation DB Error:", updateError);
+
+  // 3. Send SMS Notification (Simulation)
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('phone_number, sms_notifications_enabled')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.phone_number && profile?.sms_notifications_enabled) {
+        const { sendSMS, formatAIMessage } = await import("@/lib/sms");
+        const msg = formatAIMessage(crop, analysis.disease, analysis.confidence);
+        await sendSMS(profile.phone_number, msg);
+      }
+    }
+  } catch (smsError) {
+    console.warn("[AI Simulation] Failed to send SMS:", smsError);
+  }
 
   await new Promise(resolve => setTimeout(resolve, 3000));
   return { success: true, analysis, simulated: true };

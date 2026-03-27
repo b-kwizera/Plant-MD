@@ -25,13 +25,22 @@ export default async function RootLayout({
   let role: UserRole = "farmer";
   let fullName: string = "User";
   let avatarUrl: string | null = null;
+  let phoneNumber: string | null = null;
+  let smsEnabled: boolean = true;
   
   if (user) {
-    const { data } = await supabase.from('profiles').select('role, full_name, avatar_url').eq('id', user.id).single();
+    const { data } = await supabase
+      .from('profiles')
+      .select('role, full_name, avatar_url, phone_number, sms_notifications_enabled')
+      .eq('id', user.id)
+      .single();
+      
     if (data) {
        role = (data.role as UserRole) || "farmer";
        fullName = data.full_name || "User";
        avatarUrl = data.avatar_url;
+       phoneNumber = data.phone_number;
+       smsEnabled = data.sms_notifications_enabled ?? true;
     }
   }
 
@@ -45,6 +54,8 @@ export default async function RootLayout({
           userId={user?.id || null} 
           initialFullName={fullName}
           initialAvatarUrl={avatarUrl}
+          initialPhoneNumber={phoneNumber}
+          initialSmsEnabled={smsEnabled}
         >
           {children}
         </RoleProvider>

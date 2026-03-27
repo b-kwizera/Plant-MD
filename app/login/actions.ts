@@ -32,6 +32,7 @@ export async function signup(formData: FormData) {
       data: {
         full_name: formData.get('full_name') as string,
         role: formData.get('role') as string || 'farmer',
+        phone_number: formData.get('phone_number') as string,
       }
     }
   }
@@ -49,6 +50,7 @@ export async function signup(formData: FormData) {
         full_name: formData.get('full_name') as string,
         email: formData.get('email') as string,
         role: formData.get('role') as string || 'farmer',
+        phone_number: formData.get('phone_number') as string,
       },
     ])
   }

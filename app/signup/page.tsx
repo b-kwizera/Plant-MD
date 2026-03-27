@@ -76,6 +76,23 @@ export default async function SignupPage({
                 />
               </div>
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone_number" className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Phone Number (for SMS Alerts)</Label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground flex items-center justify-center">
+                  <span className="text-[10px] font-bold">+</span>
+                </div>
+                <Input 
+                  id="phone_number" 
+                  name="phone_number" 
+                  type="tel" 
+                  placeholder="250 788 000 000" 
+                  required 
+                  className="pl-10 h-12 rounded-xl bg-[#fcfdfc] border-border/60 focus-visible:ring-[#1A5336] font-medium"
+                />
+              </div>
+            </div>
             
             <div className="space-y-2">
               <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Password</Label>
