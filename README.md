@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌿 PlantMD: AI-Powered Agricultural Diagnostic SaaS
 
-## Getting Started
+PlantMD is a premium, high-fidelity digital ecosystem designed to bridge the "Diagnostic Gap" for farmers. Using **Google Gemini 2.0 Generative AI (Vision)**, PlantMD provides instant, expert-level plant pathology analysis while facilitating a professional human-in-the-loop workflow for expert agronomists.
 
-First, run the development server:
+---
 
+## ✨ Key Features
+
+- **🧠 Multimodal AI Diagnosis:** Real-time analysis of crop diseases using Gemini 2.0 Flash with detailed treatment plans and confidence scoring.
+- **👥 Role-Aware Dashboards:** Dedicated interfaces for **Farmers** (Upload/History), **Agronomists** (Expert Review Queue), and **Admins** (Global Analytics).
+- **📱 Real-time SMS Alerts:** Automated notifications sent directly to farmers' mobile phones via an integrated SMS gateway.
+- **🔍 Global Case Management:** Advanced search and filtering system for tracking agricultural cases across the platform.
+- **🛡️ Secure Cloud Infrastructure:** Built on Supabase with Row Level Security (RLS) to ensure data privacy and integrity.
+- **🎨 Premium UX/UI:** A high-end, responsive "Forest Green" dashboard inspired by modern design standards.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js 15+](https://nextjs.org/) (App Router & Server Actions)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
+- **Intelligence:** [Google Generative AI SDK](https://ai.google.dev/) (Gemini API)
+- **Backend/DB:** [Supabase](https://supabase.com/) (PostgreSQL, Auth, Storage)
+- **Icons:** [Lucide React](https://lucide-react.io/)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone & Install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd plant-disease
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment Variables
+Create a `.env.local` file in the root directory and add the following:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+GOOGLE_AI_API_KEY=your_gemini_api_key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🔑 Demo Credentials
 
-To learn more about Next.js, take a look at the following resources:
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Farmer** | `john@southfarm.com` | `password123` |
+| **Agronomist** | `alice@agri.gov` | `password123` |
+| **Admin** | `b.kwizera@alustudent.com` | `ihaveapassword` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Project Structure
 
-## Deploy on Vercel
+- `app/(dashboard)/`: Unified dashboard views for all roles.
+- `app/actions/`: Server actions for AI logic and DB updates.
+- `components/`: UI primitives and layout shells.
+- `lib/`: Shared utility functions (Supabase client, SMS helpers).
+- `supabase/`: Database schema and seed scripts.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+This project is developed as part of a Team Assignment for Plant Disease Early Warning Systems. All rights reserved.
+
